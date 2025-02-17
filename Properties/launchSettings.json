@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "PrintReady (Package)": {
+      "commandName": "MsixPackage"
+    },
+    "PrintReady (Unpackaged)": {
+      "commandName": "Project"
+    }
+  }
+}
