@@ -18,6 +18,7 @@ namespace PrintReady;
 public sealed partial class MainWindow : Window
 {
     private readonly ObservableCollection<Border> Images = [];
+    private const int PropertyTagOrientation = 0x112;
 
     public MainWindow()
     {
@@ -38,7 +39,7 @@ public sealed partial class MainWindow : Window
                 Source = new BitmapImage(new Uri(imagePath)),
                 Width = 200,
                 Height = 200,
-                Stretch = Stretch.UniformToFill
+                Stretch = Stretch.Fill
             };
 
             var border = new Border
@@ -67,17 +68,19 @@ public sealed partial class MainWindow : Window
         var originalWidth = source.PixelWidth;
 
         var image = System.Drawing.Image.FromFile(source.UriSource.LocalPath);
+        image = FixImageOrientation(image);
+
         int resizedWidth;
         int resizedHeight;
         if(image.Height > image.Width)
         {
-            resizedHeight = 500;
-            resizedWidth = (int)(500 / 1.5);
+            resizedHeight = 400;
+            resizedWidth = (int)(400 / 1.5);
         }
         else
         {
-            resizedHeight = (int)(500 / 1.5);
-            resizedWidth = 500;
+            resizedHeight = (int)(400 / 1.5);
+            resizedWidth = 400;
         }
 
         var resizedImageWithoutBorderSource = await ResizeImage(image, resizedWidth, resizedHeight, false);
@@ -144,7 +147,6 @@ public sealed partial class MainWindow : Window
         return await GetWinUI3BitmapSourceFromGdiBitmap(borderedImage);
     }
 
-
     public static async Task<ImageSource> GetWinUI3BitmapSourceFromGdiBitmap(Bitmap bitmap)
     {
         var data = bitmap.LockBits(new Rectangle(0, 0, bitmap.Width, bitmap.Height), System.Drawing.Imaging.ImageLockMode.ReadOnly, bitmap.PixelFormat);
@@ -184,5 +186,29 @@ public sealed partial class MainWindow : Window
         LoadImages(files.Select(f => f.Path));
 
         senderButton.IsEnabled = true;
+    }
+
+    private System.Drawing.Image FixImageOrientation(System.Drawing.Image image)
+    {
+        if (image.PropertyIdList.Contains(0x0112))
+        {
+            int orientation = BitConverter.ToUInt16(image.GetPropertyItem(PropertyTagOrientation).Value, 0);
+            if (orientation == 3)
+            {
+                image.RotateFlip(RotateFlipType.Rotate180FlipNone);
+            }
+            else if (orientation == 6)
+            {
+                image.RotateFlip(RotateFlipType.Rotate90FlipNone);
+            }
+            else if (orientation == 8)
+            {
+                image.RotateFlip(RotateFlipType.Rotate270FlipNone);
+            }
+
+            image.RemovePropertyItem(0x0112);
+        }
+
+        return image;
     }
 }
