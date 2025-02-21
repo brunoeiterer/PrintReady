@@ -9,6 +9,10 @@
     mc:Ignorable="d"
     Title="PrintReady">
 
+    <Window.SystemBackdrop>
+        <MicaBackdrop />
+    </Window.SystemBackdrop>
+
     <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center">
         <Grid x:Name="PreviewGrid">
             <Grid.ColumnDefinitions>
