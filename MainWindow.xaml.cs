@@ -51,7 +51,7 @@ public sealed partial class MainWindow : Window
     {
         GalleryGrid.IsItemClickEnabled = false;
 
-        if (e is ItemClickEventArgs args && args.ClickedItem == Images[0])
+        if (e is ItemClickEventArgs args && ReferenceEquals(args.ClickedItem, Images[0]))
         {
             await AddPictures();
         }
