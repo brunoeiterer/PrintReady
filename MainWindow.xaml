@@ -14,9 +14,16 @@
         <MicaBackdrop />
     </Window.SystemBackdrop>
 
-    <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center">
+    <StackPanel Orientation="Vertical" 
+                HorizontalAlignment="Center" 
+                VerticalAlignment="Center">
+        
         <control:Preview x:Name="Preview"/>
 
-        <GridView x:Name="GalleryGrid" HorizontalAlignment="Center"/>
+        <GridView x:Name="GalleryGrid" 
+                  HorizontalAlignment="Center"
+                  AllowDrop="True"
+                  DragOver="OnDragOver"
+                  Drop="OnDrop"/>
     </StackPanel>
 </Window>

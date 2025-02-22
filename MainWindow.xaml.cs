@@ -9,12 +9,15 @@ using Microsoft.UI.Xaml.Media.Imaging;
 using Windows.Storage.Pickers;
 using Microsoft.UI.Windowing;
 using System.Threading.Tasks;
+using Windows.ApplicationModel.DataTransfer;
+using Windows.Storage;
 
 namespace PrintReady;
 
 public sealed partial class MainWindow : Window
 {
     private readonly ObservableCollection<Border> Images = [];
+    private readonly HashSet<string> ImagePathsAdded = [];
     private int GallerySelectedIndex { get; set; } = -1;
 
     public MainWindow()
@@ -48,7 +51,7 @@ public sealed partial class MainWindow : Window
     {
         GalleryGrid.IsItemClickEnabled = false;
 
-        if(e is ItemClickEventArgs args && args.ClickedItem == Images[0])
+        if (e is ItemClickEventArgs args && args.ClickedItem == Images[0])
         {
             await AddPictures();
         }
@@ -60,6 +63,11 @@ public sealed partial class MainWindow : Window
     {
         foreach (var imagePath in imagePaths)
         {
+            if (!ImagePathsAdded.Add(imagePath))
+            {
+                continue;
+            }
+
             var image = new Image
             {
                 Source = new BitmapImage(new Uri(imagePath)),
@@ -81,7 +89,7 @@ public sealed partial class MainWindow : Window
 
     private void OnSelectionChange(object sender, SelectionChangedEventArgs e)
     {
-        if(GalleryGrid.SelectedIndex == 0)
+        if (GalleryGrid.SelectedIndex == 0)
         {
             GalleryGrid.SelectedIndex = GallerySelectedIndex;
         }
@@ -109,5 +117,21 @@ public sealed partial class MainWindow : Window
 
         var files = await picker.PickMultipleFilesAsync();
         LoadImages(files.Select(f => f.Path));
+    }
+
+    public void OnDragOver(object sender, DragEventArgs e)
+    {
+        e.AcceptedOperation = DataPackageOperation.Copy;
+    }
+
+    public async void OnDrop(object sender, DragEventArgs e)
+    {
+        if (e.DataView.Contains(StandardDataFormats.StorageItems))
+        {
+            var files = (await e.DataView.GetStorageItemsAsync()).Where(i => i.IsOfType(Windows.Storage.StorageItemTypes.File)).Cast<StorageFile>();
+            var imageFiles = files.Where(f => f.ContentType == "image/png" || f.ContentType == "image/jpeg");
+            var imagePaths = imageFiles.Select(f => f.Path);
+            LoadImages(imagePaths);
+        }
     }
 }
