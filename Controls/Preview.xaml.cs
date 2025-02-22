@@ -35,8 +35,6 @@ public sealed partial class Preview : UserControl
             return;
         }
 
-        PreviewGrid.Children.Clear();
-
         var image = System.Drawing.Image.FromFile(ImagePath);
         image = FixImageOrientation(image);
 
@@ -44,32 +42,16 @@ public sealed partial class Preview : UserControl
         int resizedHeight;
         if(image.Height > image.Width)
         {
-            resizedHeight = 400;
-            resizedWidth = (int)(400 / 1.5);
+            resizedHeight = 500;
+            resizedWidth = (int)(500 / 1.5);
         }
         else
         {
-            resizedHeight = (int)(400 / 1.5);
-            resizedWidth = 400;
+            resizedHeight = (int)(500 / 1.5);
+            resizedWidth = 500;
         }
 
-        var resizedImageWithoutBorderSource = await ResizeImage(image, resizedWidth, resizedHeight, Color.Black);
         var resizedImageSource = await ResizeImage(image, resizedWidth, resizedHeight, Color.White);
-
-        var originalImage = new Microsoft.UI.Xaml.Controls.Image
-        {
-            Source = resizedImageWithoutBorderSource,
-            Width = resizedWidth,
-            Height = resizedHeight,
-            Stretch = Stretch.None
-        };
-
-        var originalImageBorder = new Border
-        {
-            CornerRadius = new CornerRadius(4),
-            Margin = new Thickness(5),
-            Child = originalImage,
-        };
 
         var resizedImage = new Microsoft.UI.Xaml.Controls.Image
         {
@@ -79,17 +61,7 @@ public sealed partial class Preview : UserControl
             Stretch = Stretch.None
         };
 
-        var resizedImageBorder = new Border
-        {
-            CornerRadius = new CornerRadius(4),
-            Margin = new Thickness(5),
-            Child = resizedImage,
-        };
-
-        PreviewGrid.Children.Add(originalImageBorder);
-
-        PreviewGrid.Children.Add(resizedImageBorder);
-        Grid.SetColumn(resizedImageBorder, 1);
+        PreviewImageBorder.Child = resizedImage;
     }
 
     public static async Task<ImageSource> ResizeImage(System.Drawing.Image originalImage, int width, int height, Color borderColor)
