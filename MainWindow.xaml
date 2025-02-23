@@ -14,7 +14,13 @@
         <MicaBackdrop />
     </Window.SystemBackdrop>
 
-    <Grid>
+    <Grid AllowDrop="True"
+          DragOver="OnDragOver"
+          DragEnter="OnDragEnter"
+          DragLeave="OnDragLeave"
+          Drop="OnDrop"
+          Background="Transparent">
+
         <Grid.RowDefinitions>
             <RowDefinition Height="2*" />
             <RowDefinition Height="1*" />
@@ -29,9 +35,6 @@
         <GridView x:Name="GalleryGrid" 
                     HorizontalAlignment="Stretch"
                     VerticalAlignment="Stretch"
-                    AllowDrop="True"
-                    DragOver="OnDragOver"
-                    Drop="OnDrop"
                     Loaded="OnGalleryLoaded"
                     Grid.Row="1"
                     Grid.Column="0"/>
@@ -50,6 +53,27 @@
                               Glyph="&#xEE71;"
                               FontSize="24"/>
         </Button>
+
+        <Border x:Name="DragOverlay"
+                Background="#10000000"
+                Visibility="Collapsed"
+                Grid.Row="0"
+                Grid.Column="0"
+                Grid.RowSpan="2">
+            <StackPanel Orientation="Vertical"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center">
+                <FontIcon FontFamily="Segoe Fluent Icons"
+                          Glyph="&#xE74B;"
+                          FontSize="24"/>
+                <FontIcon FontFamily="Segoe Fluent Icons"
+                          Glyph="&#xE75D;"
+                          FontSize="24"/>
+                <TextBlock Text="Drop Images Here"
+                           HorizontalAlignment="Center"
+                           VerticalAlignment="Center"/>
+            </StackPanel>
+        </Border>
 
     </Grid>
 </Window>

@@ -122,9 +122,19 @@ public sealed partial class MainWindow : Window
         LoadImages(files.Select(f => f.Path));
     }
 
+    public void OnDragEnter(object sender, DragEventArgs e)
+    {
+        DragOverlay.Visibility = Visibility.Visible;
+    }
+
     public void OnDragOver(object sender, DragEventArgs e)
     {
         e.AcceptedOperation = DataPackageOperation.Copy;
+    }
+
+    public void OnDragLeave(object sender, DragEventArgs e)
+    {
+        DragOverlay.Visibility = Visibility.Collapsed;
     }
 
     public async void OnDrop(object sender, DragEventArgs e)
@@ -136,6 +146,8 @@ public sealed partial class MainWindow : Window
             var imagePaths = imageFiles.Select(f => f.Path);
             LoadImages(imagePaths);
         }
+
+        DragOverlay.Visibility = Visibility.Collapsed;
     }
     public async void OnExportButtonClickAsync(object sender, RoutedEventArgs e)
     {
