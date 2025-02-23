@@ -14,16 +14,42 @@
         <MicaBackdrop />
     </Window.SystemBackdrop>
 
-    <StackPanel Orientation="Vertical" 
-                HorizontalAlignment="Center" 
-                VerticalAlignment="Center">
-        
-        <control:Preview x:Name="Preview"/>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="2*" />
+            <RowDefinition Height="1*" />
+        </Grid.RowDefinitions>
+
+        <control:Preview x:Name="Preview"
+                         HorizontalAlignment="Center"
+                         VerticalAlignment="Top"
+                         Grid.Row="0"
+                         Grid.Column="0"/>
 
         <GridView x:Name="GalleryGrid" 
-                  HorizontalAlignment="Center"
-                  AllowDrop="True"
-                  DragOver="OnDragOver"
-                  Drop="OnDrop"/>
-    </StackPanel>
+                    HorizontalAlignment="Stretch"
+                    VerticalAlignment="Stretch"
+                    AllowDrop="True"
+                    DragOver="OnDragOver"
+                    Drop="OnDrop"
+                    Loaded="OnGalleryLoaded"
+                    Grid.Row="1"
+                    Grid.Column="0"/>
+
+        <Button ToolTipService.ToolTip="Export Images"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Bottom"
+                Width="50" Height="50"
+                Margin="20"
+                Click="OnExportButtonClickAsync"
+                Style="{StaticResource AccentButtonStyle}"
+                Grid.Row="1"
+                Grid.Column="0">
+
+            <FontIcon FontFamily="Segoe Fluent Icons"
+                              Glyph="&#xEE71;"
+                              FontSize="24"/>
+        </Button>
+
+    </Grid>
 </Window>

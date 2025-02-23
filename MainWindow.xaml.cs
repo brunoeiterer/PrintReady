@@ -11,6 +11,9 @@ using Microsoft.UI.Windowing;
 using System.Threading.Tasks;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.Storage;
+using PrintReady.Extensions;
+using System.Drawing;
+using System.IO;
 
 namespace PrintReady;
 
@@ -31,7 +34,7 @@ public sealed partial class MainWindow : Window
         {
             Child = new FontIcon()
             {
-                FontFamily = new FontFamily("Segoe Fluent Icons"),
+                FontFamily = new Microsoft.UI.Xaml.Media.FontFamily("Segoe Fluent Icons"),
                 Glyph = "\ue710",
                 FontSize = 64,
                 Width = 200,
@@ -68,7 +71,7 @@ public sealed partial class MainWindow : Window
                 continue;
             }
 
-            var image = new Image
+            var image = new Microsoft.UI.Xaml.Controls.Image
             {
                 Source = new BitmapImage(new Uri(imagePath)),
                 Width = 200,
@@ -97,7 +100,7 @@ public sealed partial class MainWindow : Window
         {
             GallerySelectedIndex = GalleryGrid.SelectedIndex;
 
-            var source = ((GalleryGrid.SelectedItem as Border)?.Child as Image)?.Source as BitmapImage;
+            var source = ((GalleryGrid.SelectedItem as Border)?.Child as Microsoft.UI.Xaml.Controls.Image)?.Source as BitmapImage;
             Preview.ImagePath = source?.UriSource.LocalPath;
         }
     }
@@ -133,5 +136,48 @@ public sealed partial class MainWindow : Window
             var imagePaths = imageFiles.Select(f => f.Path);
             LoadImages(imagePaths);
         }
+    }
+    public async void OnExportButtonClickAsync(object sender, RoutedEventArgs e)
+    {
+        var picker = new FolderPicker();
+
+        var windowHandle = WinRT.Interop.WindowNative.GetWindowHandle(this);
+        WinRT.Interop.InitializeWithWindow.Initialize(picker, windowHandle);
+
+        picker.ViewMode = PickerViewMode.Thumbnail;
+        picker.SuggestedStartLocation = PickerLocationId.ComputerFolder;
+
+        var outputFolder = await picker.PickSingleFolderAsync();
+
+        foreach(var imageBorder in Images)
+        {
+            var source = (imageBorder.Child as Microsoft.UI.Xaml.Controls.Image)?.Source as BitmapImage;
+            var path = source?.UriSource.LocalPath;
+
+            if(path == null)
+            {
+                continue;
+            }
+
+            var image = System.Drawing.Image.FromFile(path);
+            Bitmap printReadyImage;
+            if(image.Width > image.Height)
+            {
+                printReadyImage = image.ToPrintReadyImage(1800, 1200, Color.White);
+            }
+            else
+            {
+                printReadyImage = image.ToPrintReadyImage(1200, 1800, Color.White);
+            }
+
+            var extension = Path.GetExtension(path);
+            var filename = Path.GetFileNameWithoutExtension(path);
+            printReadyImage.Save(Path.Combine(outputFolder.Path, $"{filename}_PrintReady.{extension}"));
+        }
+    }
+
+    public void OnGalleryLoaded(object sender, RoutedEventArgs e)
+    {
+        GalleryGrid.HorizontalAlignment = HorizontalAlignment.Center;
     }
 }

@@ -41,8 +41,8 @@ namespace PrintReady.Extensions
 
         public static Bitmap ToPrintReadyImage(this Image originalImage, int width, int height, Color borderColor)
         {
-            var scaleX = (float)width / originalImage.Width;
-            var scaleY = (float)height / originalImage.Height;
+            var scaleX = (double)width / originalImage.Width;
+            var scaleY = (double)height / originalImage.Height;
             var scale = Math.Min(scaleX, scaleY);
 
             var newWidth = (int)(originalImage.Width * scale);
@@ -51,7 +51,8 @@ namespace PrintReady.Extensions
             var offsetX = (width - newWidth) / 2;
             var offsetY = (height - newHeight) / 2;
 
-            var borderedImage = new Bitmap(newWidth, newHeight);
+            var borderedImage = new Bitmap(width, height);
+            borderedImage.SetResolution(300, 300);
 
             using var graphics = Graphics.FromImage(borderedImage);
             graphics.Clear(borderColor);
