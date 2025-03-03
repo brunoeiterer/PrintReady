@@ -14,6 +14,8 @@ using Windows.Storage;
 using PrintReady.Extensions;
 using System.Drawing;
 using System.IO;
+using Microsoft.UI;
+using System.Collections.Specialized;
 
 namespace PrintReady;
 
@@ -21,6 +23,7 @@ public sealed partial class MainWindow : Window
 {
     private readonly ObservableCollection<Border> Images = [];
     private readonly HashSet<string> ImagePathsAdded = [];
+    private readonly List<GalleryImage> Items = [];
     private int GallerySelectedIndex { get; set; } = -1;
 
     public MainWindow()
@@ -30,19 +33,24 @@ public sealed partial class MainWindow : Window
         GalleryGrid.SelectionChanged += OnSelectionChange;
         GalleryGrid.ItemsSource = Images;
 
-        var AddImagesBorder = new Border()
+        Images.CollectionChanged += Images_CollectionChanged;
+
+        var addImagesBorder = new Border()
         {
             Child = new FontIcon()
             {
                 FontFamily = new Microsoft.UI.Xaml.Media.FontFamily("Segoe Fluent Icons"),
                 Glyph = "\ue710",
                 FontSize = 64,
-                Width = 200,
-                Height = 200,
+                Width = 150,
+                Height = 150,
+                VerticalAlignment = VerticalAlignment.Center,
+                HorizontalAlignment = HorizontalAlignment.Center,
             }
         };
 
-        Images.Add(AddImagesBorder);
+        Images.Add(addImagesBorder);
+        Items.Add(new GalleryImage(150, 150));
 
         GalleryGrid.IsItemClickEnabled = true;
         GalleryGrid.ItemClick += OnGalleryItemClicked;
@@ -71,23 +79,53 @@ public sealed partial class MainWindow : Window
                 continue;
             }
 
+            var imageSource = new BitmapImage(new Uri(imagePath));
+            var imageData = System.Drawing.Image.FromFile(imagePath);
+            imageData.FixOrientation();
+
+            var scaleFactor = 150d / imageData.Height;
+
             var image = new Microsoft.UI.Xaml.Controls.Image
             {
-                Source = new BitmapImage(new Uri(imagePath)),
-                Width = 200,
-                Height = 200,
+                Source = imageSource,
+                Width = imageData.Width * scaleFactor,
+                Height = 150,
                 Stretch = Stretch.Fill
             };
 
             var border = new Border
             {
                 CornerRadius = new CornerRadius(4),
-                Margin = new Thickness(5),
                 Child = image,
             };
 
             Images.Add(border);
+            Items.Add(new GalleryImage(imageData.Width, imageData.Height));
         }
+
+        var rows = ComputeLayout(Items, 150, GalleryGrid.ActualWidth - 20);
+
+        var index = 0;
+        foreach (var row in rows)
+        {
+            for(var i = 0; i < row.Count; i++)
+            {
+                if(Images[index].Child is Microsoft.UI.Xaml.Controls.Image image)
+                {
+                    image.Width = row[i].ScaledWidth;
+                    image.Height = row[i].ScaledHeight;
+                }
+                else if (Images[index].Child is FontIcon icon)
+                {
+                    icon.Width = row[i].ScaledWidth;
+                    icon.Height = row[i].ScaledHeight;
+                }
+
+                index++;
+            }
+        }
+
+        RefreshGallery();
     }
 
     private void OnSelectionChange(object sender, SelectionChangedEventArgs e)
@@ -161,6 +199,11 @@ public sealed partial class MainWindow : Window
 
         var outputFolder = await picker.PickSingleFolderAsync();
 
+        if(outputFolder == null)
+        {
+            return;
+        }
+
         foreach(var imageBorder in Images)
         {
             var source = (imageBorder.Child as Microsoft.UI.Xaml.Controls.Image)?.Source as BitmapImage;
@@ -188,8 +231,103 @@ public sealed partial class MainWindow : Window
         }
     }
 
+    public List<List<GalleryImage>> ComputeLayout(List<GalleryImage> images, double targetRowHeight, double containerWidth)
+    {
+        List<List<GalleryImage>> rows = new();
+        List<GalleryImage> currentRow = new();
+        double currentRowWidth = 0;
+
+        foreach (var image in images)
+        {
+            double scaledWidth = image.AspectRatio * targetRowHeight;
+            currentRowWidth += scaledWidth;
+            currentRow.Add(image);
+
+            if (currentRowWidth >= containerWidth * 0.9)
+            {
+                rows.Add(AdjustRow(currentRow, currentRowWidth, targetRowHeight, containerWidth));
+                currentRow = new List<GalleryImage>();
+                currentRowWidth = 0;
+            }
+        }
+
+        if (currentRow.Count > 0)
+        {
+            rows.Add(AdjustLastRow(currentRow, currentRowWidth, targetRowHeight, containerWidth));
+        }
+
+        return rows;
+    }
+
+    private List<GalleryImage> AdjustRow(List<GalleryImage> row, double rowWidth, double targetRowHeight, double containerWidth)
+    {
+        double scaleFactor = containerWidth / rowWidth;
+        foreach (var image in row)
+        {
+            image.ScaledWidth = image.AspectRatio * targetRowHeight * scaleFactor;
+            image.ScaledHeight = targetRowHeight * scaleFactor;
+        }
+        return row;
+    }
+
+    private List<GalleryImage> AdjustLastRow(List<GalleryImage> row, double rowWidth, double targetRowHeight, double containerWidth)
+    {
+        double minRowWidth = containerWidth * 0.6;
+        if (rowWidth < minRowWidth)
+        {
+            foreach (var image in row)
+            {
+                image.ScaledWidth = image.AspectRatio * targetRowHeight;
+                image.ScaledHeight = targetRowHeight;
+            }
+        }
+        else
+        {
+            row = AdjustRow(row, rowWidth, targetRowHeight, containerWidth);
+        }
+        return row;
+    }
+
+    private void Images_CollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
+    {
+        for(var i = 0; i < Images.Count; i++)
+        {
+            var container = (GridViewItem)GalleryGrid.ItemContainerGenerator.ContainerFromIndex(i);
+            if (container != null && Images[i].Child is Microsoft.UI.Xaml.Controls.Image image)
+            {
+                VariableSizedWrapGrid.SetColumnSpan(container, (int)image.Width + 1);
+            }
+            else if(container != null && Images[i].Child is FontIcon icon)
+            {
+                VariableSizedWrapGrid.SetColumnSpan(container, (int)icon.Width + 1);
+            }
+        }
+    }
+
     public void OnGalleryLoaded(object sender, RoutedEventArgs e)
     {
-        GalleryGrid.HorizontalAlignment = HorizontalAlignment.Center;
+        RefreshGallery();
     }
+
+    private void RefreshGallery()
+    {
+        Images.Add(new Border());
+        Images.RemoveAt(Images.Count - 1);
+    }
+}
+
+public class GalleryImage
+{
+    public double AspectRatio { get; set; }
+    public double ScaledWidth { get; set; }
+    public double ScaledHeight { get; set; }
+
+    public GalleryImage(double width, double height)
+    {
+        AspectRatio = width / height;
+        ScaledWidth = width;
+        ScaledHeight = height;
+    }
+
+    public override string ToString() => $"{AspectRatio} {ScaledWidth} {ScaledHeight}";
 }

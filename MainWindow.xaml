@@ -21,23 +21,34 @@
           Drop="OnDrop"
           Background="Transparent">
 
-        <Grid.RowDefinitions>
-            <RowDefinition Height="2*" />
-            <RowDefinition Height="1*" />
-        </Grid.RowDefinitions>
-
-        <control:Preview x:Name="Preview"
-                         HorizontalAlignment="Center"
-                         VerticalAlignment="Top"
-                         Grid.Row="0"
-                         Grid.Column="0"/>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="1.5*"/>
+            <ColumnDefinition Width="1*"/>
+        </Grid.ColumnDefinitions>
 
         <GridView x:Name="GalleryGrid" 
                     HorizontalAlignment="Stretch"
                     VerticalAlignment="Stretch"
                     Loaded="OnGalleryLoaded"
-                    Grid.Row="1"
-                    Grid.Column="0"/>
+                    Grid.Row="0"
+                    Grid.Column="0">
+
+            <GridView.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <VariableSizedWrapGrid Orientation="Horizontal"
+                                           HorizontalAlignment="Left"
+                                           HorizontalChildrenAlignment="Left"
+                                           ItemWidth="1"
+                                           ItemHeight="150"/>
+                </ItemsPanelTemplate>
+            </GridView.ItemsPanel>
+        </GridView>
+
+        <control:Preview x:Name="Preview"
+                         HorizontalAlignment="Center"
+                         VerticalAlignment="Top"
+                         Grid.Row="0"
+                         Grid.Column="1"/>
 
         <Button ToolTipService.ToolTip="Export Images"
                 HorizontalAlignment="Right"
@@ -46,8 +57,8 @@
                 Margin="20"
                 Click="OnExportButtonClickAsync"
                 Style="{StaticResource AccentButtonStyle}"
-                Grid.Row="1"
-                Grid.Column="0">
+                Grid.Row="0"
+                Grid.Column="1">
 
             <FontIcon FontFamily="Segoe Fluent Icons"
                               Glyph="&#xEE71;"
@@ -59,7 +70,7 @@
                 Visibility="Collapsed"
                 Grid.Row="0"
                 Grid.Column="0"
-                Grid.RowSpan="2">
+                Grid.ColumnSpan="2">
             <StackPanel Orientation="Vertical"
                         HorizontalAlignment="Center"
                         VerticalAlignment="Center">
