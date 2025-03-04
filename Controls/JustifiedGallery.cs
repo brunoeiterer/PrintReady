@@ -6,6 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Markup;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Media.Imaging;
@@ -60,7 +61,7 @@ public sealed partial class JustifiedGallery : GridView
             var border = new Border
             {
                 CornerRadius = new CornerRadius(4),
-                Child = image,
+                Child = image
             };
 
             ImageBorders.Add(border);
@@ -155,9 +156,43 @@ public sealed partial class JustifiedGallery : GridView
     {
         IsItemClickEnabled = false;
 
-        if (e is ItemClickEventArgs args && ReferenceEquals(args.ClickedItem, ImageBorders[0]))
+        if(e is not ItemClickEventArgs args)
+        {
+            IsItemClickEnabled = true;
+            return;
+        }
+
+        if (ReferenceEquals(args.ClickedItem, ImageBorders[0]))
         {
             await AddPictures();
+        }
+        else if(args.ClickedItem is Border border && border.Child is Image image && image.Source is BitmapImage source)
+        {
+
+            var preview = await GetPreview(source.UriSource.LocalPath);
+            var flyout = new Flyout()
+            {
+                Content = new Border()
+                {
+                    Child = new Image()
+                    {
+                        Source = preview.Source,
+                        Width = preview.Width,
+                        Height = preview.Height,
+                    }
+                },
+            };
+
+            var style = new Style(typeof(FlyoutPresenter));
+            style.Setters.Add(new Setter(MarginProperty, new Thickness(0)));
+            style.Setters.Add(new Setter(PaddingProperty, new Thickness(0)));
+            style.Setters.Add(new Setter(MaxWidthProperty, preview.Width));
+            style.Setters.Add(new Setter(MaxHeightProperty, preview.Height));
+            style.Setters.Add(new Setter(WidthProperty, preview.Width));
+            style.Setters.Add(new Setter(HeightProperty, preview.Height));
+            flyout.SetValue(Flyout.FlyoutPresenterStyleProperty, style);
+
+            flyout.ShowAt(border);
         }
 
         IsItemClickEnabled = true;
@@ -172,8 +207,6 @@ public sealed partial class JustifiedGallery : GridView
         else
         {
             GallerySelectedIndex = SelectedIndex;
-
-            var source = ((SelectedItem as Border)?.Child as Image)?.Source as BitmapImage;
         }
     }
 
@@ -197,5 +230,36 @@ public sealed partial class JustifiedGallery : GridView
 
         var files = await picker.PickMultipleFilesAsync();
         LoadImages(files.Select(f => f.Path));
+    }
+
+    private static async Task<Image> GetPreview(string imagePath)
+    {
+        var image = System.Drawing.Image.FromFile(imagePath);
+        image.FixOrientation();
+
+        int resizedWidth;
+        int resizedHeight;
+        if (image.Height > image.Width)
+        {
+            resizedHeight = 500;
+            resizedWidth = (int)(500 / 1.5);
+        }
+        else
+        {
+            resizedHeight = (int)(500 / 1.5);
+            resizedWidth = 500;
+        }
+
+        var resizedImageSource = await image.ToPrintReadyImage(resizedWidth, resizedHeight, System.Drawing.Color.White).ToImageSourceAsync();
+
+        var resizedImage = new Image
+        {
+            Source = resizedImageSource,
+            Width = resizedWidth,
+            Height = resizedHeight,
+            Stretch = Stretch.None
+        };
+
+        return resizedImage;
     }
 }

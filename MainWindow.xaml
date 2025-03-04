@@ -21,18 +21,7 @@
           Drop="OnDrop"
           Background="Transparent">
 
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="1.5*"/>
-            <ColumnDefinition Width="1*"/>
-        </Grid.ColumnDefinitions>
-
         <control:JustifiedGallery x:Name="Gallery" />
-
-        <control:Preview x:Name="Preview"
-                         HorizontalAlignment="Center"
-                         VerticalAlignment="Top"
-                         Grid.Row="0"
-                         Grid.Column="1"/>
 
         <Button ToolTipService.ToolTip="Export Images"
                 HorizontalAlignment="Right"
@@ -42,7 +31,7 @@
                 Click="OnExportButtonClickAsync"
                 Style="{StaticResource AccentButtonStyle}"
                 Grid.Row="0"
-                Grid.Column="1">
+                Grid.Column="0">
 
             <FontIcon FontFamily="Segoe Fluent Icons"
                               Glyph="&#xEE71;"
