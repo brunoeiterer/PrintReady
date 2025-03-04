@@ -26,23 +26,7 @@
             <ColumnDefinition Width="1*"/>
         </Grid.ColumnDefinitions>
 
-        <GridView x:Name="GalleryGrid" 
-                    HorizontalAlignment="Stretch"
-                    VerticalAlignment="Stretch"
-                    Loaded="OnGalleryLoaded"
-                    Grid.Row="0"
-                    Grid.Column="0">
-
-            <GridView.ItemsPanel>
-                <ItemsPanelTemplate>
-                    <VariableSizedWrapGrid Orientation="Horizontal"
-                                           HorizontalAlignment="Left"
-                                           HorizontalChildrenAlignment="Left"
-                                           ItemWidth="1"
-                                           ItemHeight="150"/>
-                </ItemsPanelTemplate>
-            </GridView.ItemsPanel>
-        </GridView>
+        <control:JustifiedGallery x:Name="Gallery" />
 
         <control:Preview x:Name="Preview"
                          HorizontalAlignment="Center"

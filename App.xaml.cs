@@ -45,4 +45,5 @@ public partial class App : Application
     }
 
     private Window? m_window;
+    public Window? Window => m_window;
 }
