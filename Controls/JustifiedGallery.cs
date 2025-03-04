@@ -102,8 +102,6 @@ public sealed partial class JustifiedGallery : GridView
     {
         HorizontalAlignment = HorizontalAlignment.Stretch;
         VerticalAlignment = VerticalAlignment.Stretch;
-        Grid.SetRow(this, 0);
-        Grid.SetColumn(this, 0);
 
         var itemsPanelXaml = @$"<ItemsPanelTemplate xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation'>
                                    <VariableSizedWrapGrid Orientation=""Horizontal""
