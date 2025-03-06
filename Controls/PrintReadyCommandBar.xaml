@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<UserControl
+    x:Class="PrintReady.Controls.PrintReadyCommandBar"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+    <CommandBar Grid.Column="0"
+                    Grid.Row="0"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Top"
+                    DefaultLabelPosition="Right">
+
+        <AppBarButton Icon="Add" Label="Add Pictures" Click="OnAddPicturesAsync" />
+        <AppBarButton Icon="Save" Label="Save PrintReady Pictures" Click="OnExportButtonClickAsync" />
+        <AppBarButton x:Name="BorderColorButton" Label="Border Color">
+            <AppBarButton.Content>
+                <Border Width="16" Height="16" Background="White" BorderThickness="1" BorderBrush="Black"/>
+            </AppBarButton.Content>
+            <AppBarButton.Flyout>
+                <MenuFlyout>
+                    <MenuFlyoutItem Text="White" Tag="White" Click="OnBorderColorSelected">
+                        <MenuFlyoutItem.Icon>
+                            <FontIcon Glyph="&#xE73B;" FontSize="16" Foreground="White"/>
+                        </MenuFlyoutItem.Icon>
+                    </MenuFlyoutItem>
+                    <MenuFlyoutItem Text="Black" Tag="Black" Click="OnBorderColorSelected">
+                        <MenuFlyoutItem.Icon>
+                            <FontIcon Glyph="&#xE73B;" FontSize="16" Foreground="Black"/>
+                        </MenuFlyoutItem.Icon>
+                    </MenuFlyoutItem>
+                    <MenuFlyoutItem Text="Gray" Tag="Gray" Click="OnBorderColorSelected">
+                        <MenuFlyoutItem.Icon>
+                            <FontIcon Glyph="&#xE73B;" FontSize="16" Foreground="Gray"/>
+                        </MenuFlyoutItem.Icon>
+                    </MenuFlyoutItem>
+                    <MenuFlyoutItem Text="Beige" Tag="Beige" Click="OnBorderColorSelected">
+                        <MenuFlyoutItem.Icon>
+                            <FontIcon Glyph="&#xE73B;" FontSize="16" Foreground="Beige"/>
+                        </MenuFlyoutItem.Icon>
+                    </MenuFlyoutItem>
+                    <MenuFlyoutItem Text="Brown" Tag="Brown" Click="OnBorderColorSelected">
+                        <MenuFlyoutItem.Icon>
+                            <FontIcon Glyph="&#xE73B;" FontSize="16" Foreground="#8B4513"/>
+                        </MenuFlyoutItem.Icon>
+                    </MenuFlyoutItem>
+                    <MenuFlyoutItem Text="Gold" Tag="Gold" Click="OnBorderColorSelected">
+                        <MenuFlyoutItem.Icon>
+                            <FontIcon Glyph="&#xE73B;" FontSize="16" Foreground="Gold"/>
+                        </MenuFlyoutItem.Icon>
+                    </MenuFlyoutItem>
+                    <MenuFlyoutItem Text="Navy" Tag="Navy" Click="OnBorderColorSelected">
+                        <MenuFlyoutItem.Icon>
+                            <FontIcon Glyph="&#xE73B;" FontSize="16" Foreground="Navy"/>
+                        </MenuFlyoutItem.Icon>
+                    </MenuFlyoutItem>
+                    <MenuFlyoutItem Text="Teal" Tag="Teal" Click="OnBorderColorSelected">
+                        <MenuFlyoutItem.Icon>
+                            <FontIcon Glyph="&#xE73B;" FontSize="16" Foreground="Teal"/>
+                        </MenuFlyoutItem.Icon>
+                    </MenuFlyoutItem>
+                    <MenuFlyoutItem Text="Forest Green" Tag="ForestGreen" Click="OnBorderColorSelected">
+                        <MenuFlyoutItem.Icon>
+                            <FontIcon Glyph="&#xE73B;" FontSize="16" Foreground="ForestGreen"/>
+                        </MenuFlyoutItem.Icon>
+                    </MenuFlyoutItem>
+                    <MenuFlyoutItem Text="Red" Tag="Red" Click="OnBorderColorSelected">
+                        <MenuFlyoutItem.Icon>
+                            <FontIcon Glyph="&#xE73B;" FontSize="16" Foreground="Red"/>
+                        </MenuFlyoutItem.Icon>
+                    </MenuFlyoutItem>
+                    <MenuFlyoutItem Text="Burgundy" Tag="Burgundy" Click="OnBorderColorSelected">
+                        <MenuFlyoutItem.Icon>
+                            <FontIcon Glyph="&#xE73B;" FontSize="16" Foreground="#800020"/>
+                        </MenuFlyoutItem.Icon>
+                    </MenuFlyoutItem>
+                    <MenuFlyoutItem Text="RoyalBlue" Tag="RoyalBlue" Click="OnBorderColorSelected">
+                        <MenuFlyoutItem.Icon>
+                            <FontIcon Glyph="&#xE73B;" FontSize="16" Foreground="RoyalBlue"/>
+                        </MenuFlyoutItem.Icon>
+                    </MenuFlyoutItem>
+                </MenuFlyout>
+            </AppBarButton.Flyout>
+        </AppBarButton>
+
+    </CommandBar>
+</UserControl>

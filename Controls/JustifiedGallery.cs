@@ -12,13 +12,14 @@ using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Media.Imaging;
 using PrintReady.Extensions;
 using PrintReady.Models;
+using PrintReady.ViewModels;
 using Windows.Storage.Pickers;
 
 namespace PrintReady.Controls;
 
 public sealed partial class JustifiedGallery : GridView
 {
-    public readonly ObservableCollection<Border> ImageBorders = [];
+    private readonly PrintReadyViewModel ViewModel;
 
     private int GallerySelectedIndex { get; set; } = -1;
     private const double ItemTargetHeight = 150;
@@ -27,9 +28,10 @@ public sealed partial class JustifiedGallery : GridView
 
     public JustifiedGallery()
     {
+        ViewModel = (PrintReadyViewModel?)App.Services.GetService(typeof(PrintReadyViewModel)) ?? throw new NullReferenceException();
         SelectionChanged += OnSelectionChanged;
-        ItemsSource = ImageBorders;
-        ImageBorders.CollectionChanged += OnImageBordersCollectionChanged;
+        ItemsSource = ViewModel.ImageBorders;
+        ViewModel.ImageBorders.CollectionChanged += OnImageBordersCollectionChanged;
         Loaded += OnGalleryLoaded;
         IsItemClickEnabled = true;
         ItemClick += OnGalleryItemClicked;
@@ -64,7 +66,7 @@ public sealed partial class JustifiedGallery : GridView
                 Child = image
             };
 
-            ImageBorders.Add(border);
+            ViewModel.ImageBorders.Add(border);
             LayoutManager.Items.Add(new LayoutItem(imageData.Width, imageData.Height));
         }
 
@@ -80,12 +82,12 @@ public sealed partial class JustifiedGallery : GridView
         {
             for (var i = 0; i < row.Count; i++)
             {
-                if (ImageBorders[index].Child is Image image)
+                if (ViewModel.ImageBorders[index].Child is Image image)
                 {
                     image.Width = row[i].ScaledWidth;
                     image.Height = row[i].ScaledHeight;
                 }
-                else if (ImageBorders[index].Child is FontIcon icon)
+                else if (ViewModel.ImageBorders[index].Child is FontIcon icon)
                 {
                     icon.Width = row[i].ScaledWidth;
                     icon.Height = row[i].ScaledHeight;
@@ -129,21 +131,21 @@ public sealed partial class JustifiedGallery : GridView
 
         DispatcherQueue.TryEnqueue(() =>
         {
-            ImageBorders.Add(addImagesBorder);
+            ViewModel.ImageBorders.Add(addImagesBorder);
             LayoutManager.Items.Add(new LayoutItem(ItemTargetHeight, ItemTargetHeight));
         });
     }
 
     private void OnImageBordersCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
     {
-        for (var i = 0; i < ImageBorders.Count; i++)
+        for (var i = 0; i < ViewModel.ImageBorders.Count; i++)
         {
             var container = (GridViewItem)ItemContainerGenerator.ContainerFromIndex(i);
-            if (container != null && ImageBorders[i].Child is Image image)
+            if (container != null && ViewModel.ImageBorders[i].Child is Image image)
             {
                 VariableSizedWrapGrid.SetColumnSpan(container, (int)image.Width + 1);
             }
-            else if (container != null && ImageBorders[i].Child is FontIcon icon)
+            else if (container != null && ViewModel.ImageBorders[i].Child is FontIcon icon)
             {
                 VariableSizedWrapGrid.SetColumnSpan(container, (int)icon.Width + 1);
             }
@@ -160,9 +162,9 @@ public sealed partial class JustifiedGallery : GridView
             return;
         }
 
-        if (ReferenceEquals(args.ClickedItem, ImageBorders[0]))
+        if (ReferenceEquals(args.ClickedItem, ViewModel.ImageBorders[0]))
         {
-            await AddPictures();
+            await AddPicturesAsync();
         }
         else if(args.ClickedItem is Border border && border.Child is Image image && image.Source is BitmapImage source)
         {
@@ -208,7 +210,7 @@ public sealed partial class JustifiedGallery : GridView
         }
     }
 
-    private async Task AddPictures()
+    public async Task AddPicturesAsync()
     {
         if (App.Current is not App app)
         {
@@ -230,7 +232,7 @@ public sealed partial class JustifiedGallery : GridView
         LoadImages(files.Select(f => f.Path));
     }
 
-    private static async Task<Image> GetPreview(string imagePath)
+    private async Task<Image> GetPreview(string imagePath)
     {
         var image = System.Drawing.Image.FromFile(imagePath);
         image.FixOrientation();
@@ -248,7 +250,7 @@ public sealed partial class JustifiedGallery : GridView
             resizedWidth = 500;
         }
 
-        var resizedImageSource = await image.ToPrintReadyImage(resizedWidth, resizedHeight, System.Drawing.Color.White).ToImageSourceAsync();
+        var resizedImageSource = await image.ToPrintReadyImage(resizedWidth, resizedHeight, ViewModel.SelectedColor).ToImageSourceAsync();
 
         var resizedImage = new Image
         {

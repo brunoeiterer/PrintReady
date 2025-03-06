@@ -26,13 +26,8 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <CommandBar Grid.Column="0"
-                    Grid.Row="0"
-                    HorizontalAlignment="Left"
-                    VerticalAlignment="Top">
-            
-            <AppBarButton Icon="Save" Label="Save PrintReady Pictures" Click="OnExportButtonClickAsync" />
-        </CommandBar>
+        <control:PrintReadyCommandBar Grid.Row="0"
+                                      Grid.Column="0" />
 
         <control:JustifiedGallery x:Name="Gallery" 
                                   Grid.Column="0"

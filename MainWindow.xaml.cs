@@ -9,6 +9,7 @@ using Windows.Storage;
 using PrintReady.Extensions;
 using System.Drawing;
 using System.IO;
+using System.Threading.Tasks;
 
 namespace PrintReady;
 
@@ -47,47 +48,6 @@ public sealed partial class MainWindow : Window
 
         DragOverlay.Visibility = Visibility.Collapsed;
     }
-    public async void OnExportButtonClickAsync(object sender, RoutedEventArgs e)
-    {
-        var picker = new FolderPicker();
 
-        var windowHandle = WinRT.Interop.WindowNative.GetWindowHandle(this);
-        WinRT.Interop.InitializeWithWindow.Initialize(picker, windowHandle);
-
-        picker.ViewMode = PickerViewMode.Thumbnail;
-        picker.SuggestedStartLocation = PickerLocationId.ComputerFolder;
-
-        var outputFolder = await picker.PickSingleFolderAsync();
-
-        if(outputFolder == null)
-        {
-            return;
-        }
-
-        foreach(var imageBorder in Gallery.ImageBorders)
-        {
-            var source = (imageBorder.Child as Microsoft.UI.Xaml.Controls.Image)?.Source as BitmapImage;
-            var path = source?.UriSource.LocalPath;
-
-            if(path == null)
-            {
-                continue;
-            }
-
-            var image = System.Drawing.Image.FromFile(path);
-            Bitmap printReadyImage;
-            if(image.Width > image.Height)
-            {
-                printReadyImage = image.ToPrintReadyImage(1800, 1200, Color.White);
-            }
-            else
-            {
-                printReadyImage = image.ToPrintReadyImage(1200, 1800, Color.White);
-            }
-
-            var extension = Path.GetExtension(path);
-            var filename = Path.GetFileNameWithoutExtension(path);
-            printReadyImage.Save(Path.Combine(outputFolder.Path, $"{filename}_PrintReady.{extension}"));
-        }
-    }
+    public async Task OnAddPicturesAsync(object sender, RoutedEventArgs e) => await Gallery.AddPicturesAsync();
 }
