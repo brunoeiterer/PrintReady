@@ -84,6 +84,17 @@
                 </MenuFlyout>
             </AppBarButton.Flyout>
         </AppBarButton>
+        <AppBarButton x:Name="ResolutionButton" Label="Resolution">
+            <AppBarButton.Content>
+                <TextBlock Text="300 dpi" />
+            </AppBarButton.Content>
+            <AppBarButton.Flyout>
+                <MenuFlyout>
+                    <MenuFlyoutItem Text="300 dpi" Tag="300" Click="OnResolutionSelected" />
+                    <MenuFlyoutItem Text="600 dpi" Tag="600" Click="OnResolutionSelected" />
+                </MenuFlyout>
+            </AppBarButton.Flyout>
+        </AppBarButton>
 
     </CommandBar>
 </UserControl>

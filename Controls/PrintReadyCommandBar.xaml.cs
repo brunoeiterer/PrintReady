@@ -114,11 +114,11 @@ namespace PrintReady.Controls
                 Bitmap printReadyImage;
                 if (image.Width > image.Height)
                 {
-                    printReadyImage = image.ToPrintReadyImage(1800, 1200, ViewModel.SelectedColor);
+                    printReadyImage = image.ToPrintReadyImage(1800, 1200, ViewModel.SelectedColor, ViewModel.SelectedResolution);
                 }
                 else
                 {
-                    printReadyImage = image.ToPrintReadyImage(1200, 1800, ViewModel.SelectedColor);
+                    printReadyImage = image.ToPrintReadyImage(1200, 1800, ViewModel.SelectedColor, ViewModel.SelectedResolution);
                 }
 
                 var extension = Path.GetExtension(path);
@@ -127,6 +127,21 @@ namespace PrintReady.Controls
             }
 
             progressDialog.Hide();
+        }
+
+        public void OnResolutionSelected(object sender, RoutedEventArgs e)
+        {
+            if(sender is not MenuFlyoutItem menuFlyoutItem)
+            {
+                return;
+            }
+
+            ViewModel.SelectedResolution = int.Parse((string)menuFlyoutItem.Tag);
+
+            if (ResolutionButton.Content is TextBlock textBlock)
+            {
+                textBlock.Text = $"{ViewModel.SelectedResolution} dpi";
+            }
         }
     }
 }

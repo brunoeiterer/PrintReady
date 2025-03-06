@@ -8,5 +8,6 @@ namespace PrintReady.ViewModels
     {
         public readonly ObservableCollection<Border> ImageBorders = [];
         public Color SelectedColor { get; set; } = Color.White;
+        public int SelectedResolution { get; set; } = 300;
     }
 }

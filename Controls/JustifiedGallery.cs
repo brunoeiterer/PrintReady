@@ -270,7 +270,7 @@ public sealed partial class JustifiedGallery : GridView
             resizedWidth = 500;
         }
 
-        var resizedImageSource = await image.ToPrintReadyImage(resizedWidth, resizedHeight, ViewModel.SelectedColor).ToImageSourceAsync();
+        var resizedImageSource = await image.ToPrintReadyImage(resizedWidth, resizedHeight, ViewModel.SelectedColor, ViewModel.SelectedResolution).ToImageSourceAsync();
 
         var resizedImage = new Image
         {

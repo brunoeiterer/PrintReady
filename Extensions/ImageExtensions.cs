@@ -39,7 +39,7 @@ namespace PrintReady.Extensions
             image.RemovePropertyItem(PropertyTagOrientation);
         }
 
-        public static Bitmap ToPrintReadyImage(this Image originalImage, int width, int height, Color borderColor)
+        public static Bitmap ToPrintReadyImage(this Image originalImage, int width, int height, Color borderColor, int resolution)
         {
             var scaleX = (double)width / originalImage.Width;
             var scaleY = (double)height / originalImage.Height;
@@ -52,7 +52,7 @@ namespace PrintReady.Extensions
             var offsetY = (height - newHeight) / 2;
 
             var borderedImage = new Bitmap(width, height);
-            borderedImage.SetResolution(300, 300);
+            borderedImage.SetResolution(resolution, resolution);
 
             using var graphics = Graphics.FromImage(borderedImage);
             graphics.Clear(borderColor);
