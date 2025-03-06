@@ -110,15 +110,17 @@ namespace PrintReady.Controls
                     continue;
                 }
 
-                var image = System.Drawing.Image.FromFile(path);
+                var image = await Task.Run(() => System.Drawing.Image.FromFile(path));
                 Bitmap printReadyImage;
                 if (image.Width > image.Height)
                 {
-                    printReadyImage = image.ToPrintReadyImage(1800, 1200, ViewModel.SelectedColor, ViewModel.SelectedResolution);
+                    printReadyImage = image.ToPrintReadyImage(ViewModel.SelectedSize.side2 * ViewModel.SelectedResolution,
+                        ViewModel.SelectedSize.side1 * ViewModel.SelectedResolution, ViewModel.SelectedColor, ViewModel.SelectedResolution);
                 }
                 else
                 {
-                    printReadyImage = image.ToPrintReadyImage(1200, 1800, ViewModel.SelectedColor, ViewModel.SelectedResolution);
+                    printReadyImage = image.ToPrintReadyImage(ViewModel.SelectedSize.side1 * ViewModel.SelectedResolution,
+                        ViewModel.SelectedSize.side2 * ViewModel.SelectedResolution, ViewModel.SelectedColor, ViewModel.SelectedResolution);
                 }
 
                 var extension = Path.GetExtension(path);
@@ -141,6 +143,31 @@ namespace PrintReady.Controls
             if (ResolutionButton.Content is TextBlock textBlock)
             {
                 textBlock.Text = $"{ViewModel.SelectedResolution} dpi";
+            }
+        }
+
+        public void OnSizeSelected(object sender, RoutedEventArgs e)
+        {
+            if(sender is not MenuFlyoutItem menuFlyoutItem)
+            {
+                return;
+            }
+
+            ViewModel.SelectedSize = ((string)menuFlyoutItem.Tag) switch
+            {
+                "10x15" => (4, 6),
+                "13x18" => (5, 7),
+                "15x21" => (6, 8),
+                "20x25" => (8, 10),
+                "20x30" => (8, 12),
+                "30x40" => (12, 16),
+                "30x45" => (12, 18),
+                _ => throw new InvalidOperationException()
+            };
+
+            if (PictureSizeButton.Content is TextBlock textBlock)
+            {
+                textBlock.Text = (string)menuFlyoutItem.Tag;
             }
         }
     }

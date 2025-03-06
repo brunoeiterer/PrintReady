@@ -95,6 +95,22 @@
                 </MenuFlyout>
             </AppBarButton.Flyout>
         </AppBarButton>
+        <AppBarButton x:Name="PictureSizeButton" Label="Picture Size">
+            <AppBarButton.Content>
+                <TextBlock Text="10x15" />
+            </AppBarButton.Content>
+            <AppBarButton.Flyout>
+                <MenuFlyout>
+                    <MenuFlyoutItem Text="10x15" Tag="10x15" Click="OnSizeSelected" />
+                    <MenuFlyoutItem Text="13x18" Tag="13x18" Click="OnSizeSelected" />
+                    <MenuFlyoutItem Text="15x21" Tag="15x21" Click="OnSizeSelected" />
+                    <MenuFlyoutItem Text="20x25" Tag="20x25" Click="OnSizeSelected" />
+                    <MenuFlyoutItem Text="20x30" Tag="24x30" Click="OnSizeSelected" />
+                    <MenuFlyoutItem Text="30x40" Tag="30x40" Click="OnSizeSelected" />
+                    <MenuFlyoutItem Text="30x45" Tag="30x45" Click="OnSizeSelected" />
+                </MenuFlyout>
+            </AppBarButton.Flyout>
+        </AppBarButton>
 
     </CommandBar>
 </UserControl>
