@@ -37,17 +37,35 @@ public sealed partial class JustifiedGallery : GridView
         ItemClick += OnGalleryItemClicked;
     }
 
-    public void LoadImages(IEnumerable<string> imagePaths)
+    public async Task LoadImages(IEnumerable<string> imagePaths)
     {
+        var progressRing = new ProgressRing()
+        {
+            IsIndeterminate = false,
+            Value = 0
+        };
+        var progressDialog = new ContentDialog()
+        {
+            XamlRoot = XamlRoot,
+            Content = progressRing
+        };
+
+        var progressStep = 100d / imagePaths.Count();
+
+        progressDialog.Title = "Loading Images";
+        _ = progressDialog.ShowAsync();
+
         foreach (var imagePath in imagePaths)
         {
+            progressRing.Value += progressStep;
             if (!ImagePathsAdded.Add(imagePath))
             {
                 continue;
             }
 
             var imageSource = new BitmapImage(new Uri(imagePath));
-            var imageData = System.Drawing.Image.FromFile(imagePath);
+            var imageData = await Task.Run(() => System.Drawing.Image.FromFile(imagePath));
+
             imageData.FixOrientation();
 
             var scaleFactor = ItemTargetHeight / imageData.Height;
@@ -68,9 +86,11 @@ public sealed partial class JustifiedGallery : GridView
 
             ViewModel.ImageBorders.Add(border);
             LayoutManager.Items.Add(new LayoutItem(imageData.Width, imageData.Height));
+
+            RefreshLayout();
         }
 
-        RefreshLayout();
+        progressDialog.Hide();
     }
 
     private void RefreshLayout()
