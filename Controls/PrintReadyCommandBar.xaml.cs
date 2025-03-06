@@ -1,6 +1,7 @@
 using System;
 using System.Drawing;
 using System.IO;
+using System.Threading.Tasks;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
@@ -62,9 +63,14 @@ namespace PrintReady.Controls
 
         public async void OnExportButtonClickAsync(object sender, RoutedEventArgs e)
         {
+            if(App.Current is not App app)
+            {
+                return;
+            }
+
             var picker = new FolderPicker();
 
-            var windowHandle = WinRT.Interop.WindowNative.GetWindowHandle(this);
+            var windowHandle = WinRT.Interop.WindowNative.GetWindowHandle(app.Window);
             WinRT.Interop.InitializeWithWindow.Initialize(picker, windowHandle);
 
             picker.ViewMode = PickerViewMode.Thumbnail;
@@ -77,8 +83,25 @@ namespace PrintReady.Controls
                 return;
             }
 
+            var progressRing = new ProgressRing()
+            {
+                IsIndeterminate = false,
+                Value = 0
+            };
+            var progressDialog = new ContentDialog()
+            {
+                XamlRoot = XamlRoot,
+                Content = progressRing,
+                Title = "Exporting Images"
+            };
+
+            var progressStep = 100d / ViewModel.ImageBorders.Count;
+
+            _ = progressDialog.ShowAsync();
+
             foreach (var imageBorder in ViewModel.ImageBorders)
             {
+                progressRing.Value += progressStep;
                 var source = (imageBorder.Child as Microsoft.UI.Xaml.Controls.Image)?.Source as BitmapImage;
                 var path = source?.UriSource.LocalPath;
 
@@ -100,8 +123,10 @@ namespace PrintReady.Controls
 
                 var extension = Path.GetExtension(path);
                 var filename = Path.GetFileNameWithoutExtension(path);
-                printReadyImage.Save(Path.Combine(outputFolder.Path, $"{filename}_PrintReady.{extension}"));
+                await Task.Run(() => printReadyImage.Save(Path.Combine(outputFolder.Path, $"{filename}_PrintReady.{extension}")));
             }
+
+            progressDialog.Hide();
         }
     }
 }

@@ -47,12 +47,12 @@ public sealed partial class JustifiedGallery : GridView
         var progressDialog = new ContentDialog()
         {
             XamlRoot = XamlRoot,
-            Content = progressRing
+            Content = progressRing,
+            Title = "Loading Images"
         };
 
         var progressStep = 100d / imagePaths.Count();
 
-        progressDialog.Title = "Loading Images";
         _ = progressDialog.ShowAsync();
 
         foreach (var imagePath in imagePaths)
