@@ -118,60 +118,60 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="AddPicturesButton.Label" xml:space="preserve">
-    <value>Add Pictures</value>
+    <value>Adicionar Fotos</value>
   </data>
   <data name="BeigeMenuFlyoutItem.Text" xml:space="preserve">
-    <value>Beige</value>
+    <value>Bege</value>
   </data>
   <data name="BlackMenuFlyoutItem.Text" xml:space="preserve">
-    <value>Black</value>
+    <value>Preto</value>
   </data>
   <data name="BorderColorButton.Label" xml:space="preserve">
-    <value>Border Color</value>
+    <value>Cor da Borda</value>
   </data>
   <data name="BrownMenuFlyoutItem.Text" xml:space="preserve">
-    <value>Brown</value>
+    <value>Marrom</value>
   </data>
   <data name="BurgundyMenuFlyoutItem.Text" xml:space="preserve">
-    <value>Burgundy</value>
+    <value>Bordô</value>
   </data>
   <data name="ExportingPictures" xml:space="preserve">
-    <value>Exporting Pictures</value>
+    <value>Exportando Fotos</value>
   </data>
   <data name="ForestGreenMenuFlyoutItem.Text" xml:space="preserve">
-    <value>Forest Green</value>
+    <value>Verde Floresta</value>
   </data>
   <data name="GoldMenuFlyoutItem.Text" xml:space="preserve">
-    <value>Gold</value>
+    <value>Dourado</value>
   </data>
   <data name="GrayMenuFlyoutItem.Text" xml:space="preserve">
-    <value>Gray</value>
+    <value>Cinza</value>
   </data>
   <data name="LoadingPictures" xml:space="preserve">
-    <value>Loading Pictures</value>
+    <value>Carregando Fotos</value>
   </data>
   <data name="NavyMenuFlyoutItem.Text" xml:space="preserve">
-    <value>Navy</value>
+    <value>Azul Marinho</value>
   </data>
   <data name="PictureSizeButton.Label" xml:space="preserve">
-    <value>Picture Size</value>
+    <value>Tamanho da Foto</value>
   </data>
   <data name="RedMenuFlyoutItem.Text" xml:space="preserve">
-    <value>Red</value>
+    <value>Vermelho</value>
   </data>
   <data name="ResolutionButton.Label" xml:space="preserve">
-    <value>Resolution</value>
+    <value>Resolução</value>
   </data>
   <data name="RoyalBlueMenuFlyoutItem.Text" xml:space="preserve">
-    <value>Royal Blue</value>
+    <value>Azul Real</value>
   </data>
   <data name="SavePrintReadyPicturesButton.Label" xml:space="preserve">
-    <value>Save PrintReady Pictures</value>
+    <value>Salvar Fotos PrintReady</value>
   </data>
   <data name="TealMenuFlyoutItem.Text" xml:space="preserve">
-    <value>Teal</value>
+    <value>Azul Petróleo</value>
   </data>
   <data name="WhiteMenuFlyoutItem.Text" xml:space="preserve">
-    <value>White</value>
+    <value>Branco</value>
   </data>
 </root>

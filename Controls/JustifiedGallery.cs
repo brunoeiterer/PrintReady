@@ -1,15 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Markup;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Media.Imaging;
+using Microsoft.Windows.ApplicationModel.Resources;
 using PrintReady.Extensions;
 using PrintReady.Models;
 using PrintReady.ViewModels;
@@ -25,6 +24,7 @@ public sealed partial class JustifiedGallery : GridView
     private const double ItemTargetHeight = 150;
     private readonly HashSet<string> ImagePathsAdded = [];
     private readonly LayoutManager LayoutManager = new();
+    private readonly ResourceLoader ResourceLoader = new();
 
     public JustifiedGallery()
     {
@@ -48,7 +48,7 @@ public sealed partial class JustifiedGallery : GridView
         {
             XamlRoot = XamlRoot,
             Content = progressRing,
-            Title = "Loading Images"
+            Title = ResourceLoader.GetString("LoadingPictures")
         };
 
         var progressStep = 100d / imagePaths.Count();

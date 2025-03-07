@@ -13,70 +13,70 @@
                     VerticalAlignment="Top"
                     DefaultLabelPosition="Right">
 
-        <AppBarButton Icon="Add" Label="Add Pictures" Click="OnAddPicturesAsync" />
-        <AppBarButton Icon="Save" Label="Save PrintReady Pictures" Click="OnExportButtonClickAsync" />
-        <AppBarButton x:Name="BorderColorButton" Label="Border Color">
+        <AppBarButton x:Uid="AddPicturesButton" Icon="Add" Click="OnAddPicturesAsync" />
+        <AppBarButton x:Uid="SavePrintReadyPicturesButton" Icon="Save" Click="OnExportButtonClickAsync" />
+        <AppBarButton x:Uid="BorderColorButton" x:Name="BorderColorButton" >
             <AppBarButton.Content>
                 <Border Width="16" Height="16" Background="White" BorderThickness="1" BorderBrush="Black"/>
             </AppBarButton.Content>
             <AppBarButton.Flyout>
                 <MenuFlyout>
-                    <MenuFlyoutItem Text="White" Tag="White" Click="OnBorderColorSelected">
+                    <MenuFlyoutItem x:Uid="WhiteMenuFlyoutItem" Tag="White" Click="OnBorderColorSelected">
                         <MenuFlyoutItem.Icon>
                             <FontIcon Glyph="&#xE73B;" FontSize="16" Foreground="White"/>
                         </MenuFlyoutItem.Icon>
                     </MenuFlyoutItem>
-                    <MenuFlyoutItem Text="Black" Tag="Black" Click="OnBorderColorSelected">
+                    <MenuFlyoutItem x:Uid="BlackMenuFlyoutItem" Tag="Black" Click="OnBorderColorSelected">
                         <MenuFlyoutItem.Icon>
                             <FontIcon Glyph="&#xE73B;" FontSize="16" Foreground="Black"/>
                         </MenuFlyoutItem.Icon>
                     </MenuFlyoutItem>
-                    <MenuFlyoutItem Text="Gray" Tag="Gray" Click="OnBorderColorSelected">
+                    <MenuFlyoutItem x:Uid="GrayMenuFlyoutItem" Tag="Gray" Click="OnBorderColorSelected">
                         <MenuFlyoutItem.Icon>
                             <FontIcon Glyph="&#xE73B;" FontSize="16" Foreground="Gray"/>
                         </MenuFlyoutItem.Icon>
                     </MenuFlyoutItem>
-                    <MenuFlyoutItem Text="Beige" Tag="Beige" Click="OnBorderColorSelected">
+                    <MenuFlyoutItem x:Uid="BeigeMenuFlyoutItem" Tag="Beige" Click="OnBorderColorSelected">
                         <MenuFlyoutItem.Icon>
                             <FontIcon Glyph="&#xE73B;" FontSize="16" Foreground="Beige"/>
                         </MenuFlyoutItem.Icon>
                     </MenuFlyoutItem>
-                    <MenuFlyoutItem Text="Brown" Tag="Brown" Click="OnBorderColorSelected">
+                    <MenuFlyoutItem x:Uid="BrownMenuFlyoutItem" Tag="Brown" Click="OnBorderColorSelected">
                         <MenuFlyoutItem.Icon>
                             <FontIcon Glyph="&#xE73B;" FontSize="16" Foreground="#8B4513"/>
                         </MenuFlyoutItem.Icon>
                     </MenuFlyoutItem>
-                    <MenuFlyoutItem Text="Gold" Tag="Gold" Click="OnBorderColorSelected">
+                    <MenuFlyoutItem x:Uid="GoldMenuFlyoutItem" Tag="Gold" Click="OnBorderColorSelected">
                         <MenuFlyoutItem.Icon>
                             <FontIcon Glyph="&#xE73B;" FontSize="16" Foreground="Gold"/>
                         </MenuFlyoutItem.Icon>
                     </MenuFlyoutItem>
-                    <MenuFlyoutItem Text="Navy" Tag="Navy" Click="OnBorderColorSelected">
+                    <MenuFlyoutItem x:Uid="NavyMenuFlyoutItem" Tag="Navy" Click="OnBorderColorSelected">
                         <MenuFlyoutItem.Icon>
                             <FontIcon Glyph="&#xE73B;" FontSize="16" Foreground="Navy"/>
                         </MenuFlyoutItem.Icon>
                     </MenuFlyoutItem>
-                    <MenuFlyoutItem Text="Teal" Tag="Teal" Click="OnBorderColorSelected">
+                    <MenuFlyoutItem x:Uid="TealMenuFlyoutItem" Tag="Teal" Click="OnBorderColorSelected">
                         <MenuFlyoutItem.Icon>
                             <FontIcon Glyph="&#xE73B;" FontSize="16" Foreground="Teal"/>
                         </MenuFlyoutItem.Icon>
                     </MenuFlyoutItem>
-                    <MenuFlyoutItem Text="Forest Green" Tag="ForestGreen" Click="OnBorderColorSelected">
+                    <MenuFlyoutItem x:Uid="ForestGreenMenuFlyoutItem" Tag="ForestGreen" Click="OnBorderColorSelected">
                         <MenuFlyoutItem.Icon>
                             <FontIcon Glyph="&#xE73B;" FontSize="16" Foreground="ForestGreen"/>
                         </MenuFlyoutItem.Icon>
                     </MenuFlyoutItem>
-                    <MenuFlyoutItem Text="Red" Tag="Red" Click="OnBorderColorSelected">
+                    <MenuFlyoutItem x:Uid="RedMenuFlyoutItem" Tag="Red" Click="OnBorderColorSelected">
                         <MenuFlyoutItem.Icon>
                             <FontIcon Glyph="&#xE73B;" FontSize="16" Foreground="Red"/>
                         </MenuFlyoutItem.Icon>
                     </MenuFlyoutItem>
-                    <MenuFlyoutItem Text="Burgundy" Tag="Burgundy" Click="OnBorderColorSelected">
+                    <MenuFlyoutItem x:Uid="BurgundyMenuFlyoutItem" Tag="Burgundy" Click="OnBorderColorSelected">
                         <MenuFlyoutItem.Icon>
                             <FontIcon Glyph="&#xE73B;" FontSize="16" Foreground="#800020"/>
                         </MenuFlyoutItem.Icon>
                     </MenuFlyoutItem>
-                    <MenuFlyoutItem Text="RoyalBlue" Tag="RoyalBlue" Click="OnBorderColorSelected">
+                    <MenuFlyoutItem x:Uid="RoyalBlueMenuFlyoutItem" Tag="RoyalBlue" Click="OnBorderColorSelected">
                         <MenuFlyoutItem.Icon>
                             <FontIcon Glyph="&#xE73B;" FontSize="16" Foreground="RoyalBlue"/>
                         </MenuFlyoutItem.Icon>
@@ -84,7 +84,7 @@
                 </MenuFlyout>
             </AppBarButton.Flyout>
         </AppBarButton>
-        <AppBarButton x:Name="ResolutionButton" Label="Resolution">
+        <AppBarButton x:Uid="ResolutionButton" x:Name="ResolutionButton">
             <AppBarButton.Content>
                 <TextBlock Text="300 dpi" />
             </AppBarButton.Content>
@@ -95,7 +95,7 @@
                 </MenuFlyout>
             </AppBarButton.Flyout>
         </AppBarButton>
-        <AppBarButton x:Name="PictureSizeButton" Label="Picture Size">
+        <AppBarButton x:Uid="PictureSizeButton" x:Name="PictureSizeButton">
             <AppBarButton.Content>
                 <TextBlock Text="10x15" />
             </AppBarButton.Content>

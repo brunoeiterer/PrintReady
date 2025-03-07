@@ -6,6 +6,7 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Media.Imaging;
+using Microsoft.Windows.ApplicationModel.Resources;
 using PrintReady.Extensions;
 using PrintReady.ViewModels;
 using Windows.Storage.Pickers;
@@ -15,8 +16,8 @@ namespace PrintReady.Controls
     public sealed partial class PrintReadyCommandBar : UserControl
     {
         private readonly PrintReadyViewModel ViewModel;
+        private readonly ResourceLoader ResourceLoader = new();
 
-        public event EventHandler? ExportRequested;
         public PrintReadyCommandBar()
         {
             InitializeComponent();
@@ -92,7 +93,7 @@ namespace PrintReady.Controls
             {
                 XamlRoot = XamlRoot,
                 Content = progressRing,
-                Title = "Exporting Images"
+                Title = ResourceLoader.GetString("ExportingPictures")
             };
 
             var progressStep = 100d / ViewModel.ImageBorders.Count;
