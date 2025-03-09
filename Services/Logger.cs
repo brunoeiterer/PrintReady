@@ -22,12 +22,12 @@ namespace PrintReady.Services
         public static void Log(string log, [CallerFilePath] string filePath = "", [CallerLineNumber] int lineNumber = -1)
         {
             string? fileName = null;
-            if(filePath != "")
+            if (filePath != "")
             {
                 fileName = Path.GetFileName(filePath);
             }
 
-            if(fileName != null && lineNumber != -1)
+            if (fileName != null && lineNumber != -1)
             {
                 File.AppendAllText(LogPath, $"{DateTime.Now.ToString("d", DateTimeFormatInfo.InvariantInfo)} {fileName}@{lineNumber} {log}{Environment.NewLine}");
             }
@@ -36,5 +36,7 @@ namespace PrintReady.Services
                 File.AppendAllText(LogPath, $"{DateTime.Now.ToString("d", DateTimeFormatInfo.InvariantInfo)} {log}{Environment.NewLine}");
             }
         }
+
+        public static string GetLogContent() => File.ReadAllText(LogPath);
     }
 }

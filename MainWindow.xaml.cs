@@ -8,11 +8,15 @@ using System.Threading.Tasks;
 using Microsoft.UI;
 using WinRT.Interop;
 using PrintReady.Services;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.Windows.ApplicationModel.Resources;
 
 namespace PrintReady;
 
 public sealed partial class MainWindow : Window
 {
+    public XamlRoot XamlRoot => Gallery.XamlRoot;
+
     public MainWindow()
     {
         InitializeComponent();
@@ -58,6 +62,25 @@ public sealed partial class MainWindow : Window
 
         DragOverlay.Visibility = Visibility.Collapsed;
     }
+
+    public void DisplayErrorDialog()
+    {
+        DispatcherQueue.TryEnqueue(async () =>
+        {
+            var resourceLoader = new ResourceLoader();
+            var errorDialog = new ContentDialog
+            {
+                XamlRoot = Gallery.XamlRoot,
+                Title = resourceLoader.GetString("ErrorDialogTitle"),
+                Content = resourceLoader.GetString("ErrorDialogContent"),
+                PrimaryButtonText = resourceLoader.GetString("ErrorDialogCloseApplicationButtonText")
+            };
+
+            await errorDialog.ShowAsync();
+            App.Current.Exit();
+        });
+    }
+
 
     public async Task OnAddPicturesAsync(object sender, RoutedEventArgs e) => await Gallery.AddPicturesAsync();
 }

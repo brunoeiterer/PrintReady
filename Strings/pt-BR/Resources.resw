@@ -135,6 +135,18 @@
   <data name="BurgundyMenuFlyoutItem.Text" xml:space="preserve">
     <value>Bordô</value>
   </data>
+  <data name="ErrorDialogCloseApplicationButtonText" xml:space="preserve">
+    <value>Fechar Aplicativo</value>
+  </data>
+  <data name="ErrorDialogContent" xml:space="preserve">
+    <value>Um erro irrecuperável ocorreu. Por favor, reporte o erro usando o botando abaixo.</value>
+  </data>
+  <data name="ErrorDialogReportErrorButtonText" xml:space="preserve">
+    <value>Reportar Erro</value>
+  </data>
+  <data name="ErrorDialogTitle" xml:space="preserve">
+    <value>Erro</value>
+  </data>
   <data name="ExportingPictures" xml:space="preserve">
     <value>Exportando Fotos</value>
   </data>
