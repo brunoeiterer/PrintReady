@@ -1,15 +1,12 @@
 using System;
 using System.Linq;
 using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Media.Imaging;
-using Windows.Storage.Pickers;
 using Microsoft.UI.Windowing;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.Storage;
-using PrintReady.Extensions;
-using System.Drawing;
-using System.IO;
 using System.Threading.Tasks;
+using Microsoft.UI;
+using WinRT.Interop;
 
 namespace PrintReady;
 
@@ -19,6 +16,14 @@ public sealed partial class MainWindow : Window
     {
         InitializeComponent();
         ((OverlappedPresenter)AppWindow.Presenter).Maximize();
+
+        if (AppWindowTitleBar.IsCustomizationSupported() is true)
+        {
+            var hWnd = WindowNative.GetWindowHandle(this);
+            var wndId = Win32Interop.GetWindowIdFromWindow(hWnd);
+            var appWindow = AppWindow.GetFromWindowId(wndId);
+            appWindow.SetIcon(@"Assets\LogoPrintReady.ico");
+        }
     }
 
     public void OnDragEnter(object sender, DragEventArgs e)
