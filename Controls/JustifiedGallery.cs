@@ -11,6 +11,7 @@ using Microsoft.UI.Xaml.Media.Imaging;
 using Microsoft.Windows.ApplicationModel.Resources;
 using PrintReady.Extensions;
 using PrintReady.Models;
+using PrintReady.Services;
 using PrintReady.ViewModels;
 using Windows.Storage.Pickers;
 
@@ -39,6 +40,7 @@ public sealed partial class JustifiedGallery : GridView
 
     public async Task LoadImages(IEnumerable<string> imagePaths)
     {
+        Logger.Log("Loading images");
         var progressRing = new ProgressRing()
         {
             IsIndeterminate = false,
@@ -174,6 +176,7 @@ public sealed partial class JustifiedGallery : GridView
 
     private async void OnGalleryItemClicked(object sender, RoutedEventArgs e)
     {
+        Logger.Log("Gallery item clicked");
         IsItemClickEnabled = false;
 
         if(e is not ItemClickEventArgs args)
@@ -232,6 +235,7 @@ public sealed partial class JustifiedGallery : GridView
 
     public async Task AddPicturesAsync()
     {
+        Logger.Log("Adding pictures");
         if (App.Current is not App app)
         {
             return;
@@ -249,7 +253,7 @@ public sealed partial class JustifiedGallery : GridView
         picker.FileTypeFilter.Add(".png");
 
         var files = await picker.PickMultipleFilesAsync();
-        LoadImages(files.Select(f => f.Path));
+        await LoadImages(files.Select(f => f.Path));
     }
 
     private async Task<Image> GetPreview(string imagePath)

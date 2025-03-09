@@ -8,6 +8,7 @@ using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Media.Imaging;
 using Microsoft.Windows.ApplicationModel.Resources;
 using PrintReady.Extensions;
+using PrintReady.Services;
 using PrintReady.ViewModels;
 using Windows.Storage.Pickers;
 
@@ -26,7 +27,9 @@ namespace PrintReady.Controls
 
         public void OnBorderColorSelected(object sender, RoutedEventArgs e)
         {
+            Logger.Log("Border color selected");
             if (sender is MenuFlyoutItem menuFlyoutItem) {
+                Logger.Log($"Tag {menuFlyoutItem.Tag}");
                 ViewModel.SelectedColor = menuFlyoutItem.Tag switch
                 {
                     "White" => Color.White,
@@ -54,6 +57,7 @@ namespace PrintReady.Controls
 
         public async void OnAddPicturesAsync(object sender, RoutedEventArgs e)
         {
+            Logger.Log("Add pictures");
             if (App.Current is not App app || app.Window is not MainWindow mainWindow)
             {
                 return;
@@ -64,7 +68,8 @@ namespace PrintReady.Controls
 
         public async void OnExportButtonClickAsync(object sender, RoutedEventArgs e)
         {
-            if(App.Current is not App app)
+            Logger.Log("Export");
+            if (App.Current is not App app)
             {
                 return;
             }
@@ -134,10 +139,13 @@ namespace PrintReady.Controls
 
         public void OnResolutionSelected(object sender, RoutedEventArgs e)
         {
-            if(sender is not MenuFlyoutItem menuFlyoutItem)
+            Logger.Log("Resolution selected");
+            if (sender is not MenuFlyoutItem menuFlyoutItem)
             {
                 return;
             }
+
+            Logger.Log($"Tag {Tag}");
 
             ViewModel.SelectedResolution = int.Parse((string)menuFlyoutItem.Tag);
 
@@ -149,10 +157,13 @@ namespace PrintReady.Controls
 
         public void OnSizeSelected(object sender, RoutedEventArgs e)
         {
+            Logger.Log("Size selected");
             if(sender is not MenuFlyoutItem menuFlyoutItem)
             {
                 return;
             }
+
+            Logger.Log($"Tag {menuFlyoutItem.Tag}");
 
             ViewModel.SelectedSize = ((string)menuFlyoutItem.Tag) switch
             {
