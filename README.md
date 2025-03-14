@@ -17,9 +17,9 @@ The app is fully built in C#, using .NET8 and WinUI 3 as the Framework.
 
 ### Steps
 - Clone the repository:
-'''
+```
   git clone https://github.com/brunoeiterer/PrintReady.git
-'''
+```
 - Open the project in Visual Studio
 - Run the PrintReady (Package) build
 
