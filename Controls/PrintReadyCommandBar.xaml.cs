@@ -129,9 +129,10 @@ namespace PrintReady.Controls
                         ViewModel.SelectedSize.side2 * ViewModel.SelectedResolution, ViewModel.SelectedColor, ViewModel.SelectedResolution);
                 }
 
+                var format = image.RawFormat;
                 var extension = Path.GetExtension(path);
                 var filename = Path.GetFileNameWithoutExtension(path);
-                await Task.Run(() => printReadyImage.Save(Path.Combine(outputFolder.Path, $"{filename}_PrintReady.{extension}")));
+                await Task.Run(() => printReadyImage.Save(Path.Combine(outputFolder.Path, $"{filename}_PrintReady.{extension}"), format));
             }
 
             progressDialog.Hide();

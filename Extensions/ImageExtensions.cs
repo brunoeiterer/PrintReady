@@ -51,7 +51,7 @@ namespace PrintReady.Extensions
             var offsetX = (width - newWidth) / 2;
             var offsetY = (height - newHeight) / 2;
 
-            var borderedImage = new Bitmap(width, height);
+            var borderedImage = new Bitmap(width, height, originalImage.PixelFormat);
             borderedImage.SetResolution(resolution, resolution);
 
             using var graphics = Graphics.FromImage(borderedImage);
