@@ -17,6 +17,8 @@ public sealed partial class MainWindow : Window
 {
     public XamlRoot XamlRoot => Gallery.XamlRoot;
 
+    public bool ShouldAddDate { get; set; } = true;
+
     public MainWindow()
     {
         InitializeComponent();
@@ -56,8 +58,7 @@ public sealed partial class MainWindow : Window
         {
             var files = (await e.DataView.GetStorageItemsAsync()).Where(i => i.IsOfType(StorageItemTypes.File)).Cast<StorageFile>();
             var imageFiles = files.Where(f => f.ContentType == "image/png" || f.ContentType == "image/jpeg");
-            var imagePaths = imageFiles.Select(f => f.Path);
-            await Gallery.LoadImages(imagePaths);
+            await Gallery.LoadImages(imageFiles);
         }
 
         DragOverlay.Visibility = Visibility.Collapsed;

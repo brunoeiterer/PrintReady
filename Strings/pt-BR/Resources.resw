@@ -117,6 +117,15 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="AddDateButton.Icon" xml:space="preserve">
+    <value>CalendarDay</value>
+  </data>
+  <data name="AddDateButton.Label" xml:space="preserve">
+    <value>Adicionar Data</value>
+  </data>
+  <data name="AddDateButton.ToolTipService.ToolTip" xml:space="preserve">
+    <value>Adiciona a data e o horário que a foto foi tirada, caso estejam disponíveis nos metadados.</value>
+  </data>
   <data name="AddPicturesButton.Label" xml:space="preserve">
     <value>Adicionar Fotos</value>
   </data>

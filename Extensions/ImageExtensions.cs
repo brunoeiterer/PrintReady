@@ -39,7 +39,7 @@ namespace PrintReady.Extensions
             image.RemovePropertyItem(PropertyTagOrientation);
         }
 
-        public static Bitmap ToPrintReadyImage(this Image originalImage, int width, int height, Color borderColor, int resolution)
+        public static Bitmap ToPrintReadyImage(this Image originalImage, int width, int height, Color borderColor, int resolution, DateTimeOffset? dateTaken)
         {
             var scaleX = (double)width / originalImage.Width;
             var scaleY = (double)height / originalImage.Height;
@@ -57,6 +57,22 @@ namespace PrintReady.Extensions
             using var graphics = Graphics.FromImage(borderedImage);
             graphics.Clear(borderColor);
             graphics.DrawImage(originalImage, new Rectangle(offsetX, offsetY, newWidth, newHeight));
+
+
+            var shouldAddDate = false;
+            if (App.Current is App app && app.Window is MainWindow mainWindow)
+            {
+                shouldAddDate = mainWindow.ShouldAddDate;
+            }
+
+            if (shouldAddDate && dateTaken is not null)
+            {
+                var dateString = dateTaken.ToString();
+                using var font = SystemFonts.DefaultFont;
+                using var brush = new SolidBrush(Color.Black);
+                var size = graphics.MeasureString(dateString, font);
+                graphics.DrawString(dateString, font, brush, width - size.Width, height - size.Height);
+            }
 
             return borderedImage;
         }

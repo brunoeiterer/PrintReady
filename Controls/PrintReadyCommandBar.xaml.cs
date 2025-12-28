@@ -108,31 +108,35 @@ namespace PrintReady.Controls
             foreach (var imageBorder in ViewModel.ImageBorders)
             {
                 progressRing.Value += progressStep;
-                var source = (imageBorder.Child as Microsoft.UI.Xaml.Controls.Image)?.Source as BitmapImage;
-                var path = source?.UriSource.LocalPath;
-
-                if (path == null)
+                if(imageBorder.Child is Microsoft.UI.Xaml.Controls.Image imageData && imageData is not null)
                 {
-                    continue;
-                }
+                    var source = imageData.Source as BitmapImage;
+                    var dateTaken = (DateTimeOffset)imageData.Tag;
+                    var path = source?.UriSource.LocalPath;
 
-                var image = await Task.Run(() => System.Drawing.Image.FromFile(path));
-                Bitmap printReadyImage;
-                if (image.Width > image.Height)
-                {
-                    printReadyImage = image.ToPrintReadyImage(ViewModel.SelectedSize.side2 * ViewModel.SelectedResolution,
-                        ViewModel.SelectedSize.side1 * ViewModel.SelectedResolution, ViewModel.SelectedColor, ViewModel.SelectedResolution);
-                }
-                else
-                {
-                    printReadyImage = image.ToPrintReadyImage(ViewModel.SelectedSize.side1 * ViewModel.SelectedResolution,
-                        ViewModel.SelectedSize.side2 * ViewModel.SelectedResolution, ViewModel.SelectedColor, ViewModel.SelectedResolution);
-                }
+                    if (path == null)
+                    {
+                        continue;
+                    }
 
-                var format = image.RawFormat;
-                var extension = Path.GetExtension(path);
-                var filename = Path.GetFileNameWithoutExtension(path);
-                await Task.Run(() => printReadyImage.Save(Path.Combine(outputFolder.Path, $"{filename}_PrintReady.{extension}"), format));
+                    var image = await Task.Run(() => System.Drawing.Image.FromFile(path));
+                    Bitmap printReadyImage;
+                    if (image.Width > image.Height)
+                    {
+                        printReadyImage = image.ToPrintReadyImage(ViewModel.SelectedSize.side2 * ViewModel.SelectedResolution,
+                            ViewModel.SelectedSize.side1 * ViewModel.SelectedResolution, ViewModel.SelectedColor, ViewModel.SelectedResolution, dateTaken);
+                    }
+                    else
+                    {
+                        printReadyImage = image.ToPrintReadyImage(ViewModel.SelectedSize.side1 * ViewModel.SelectedResolution,
+                            ViewModel.SelectedSize.side2 * ViewModel.SelectedResolution, ViewModel.SelectedColor, ViewModel.SelectedResolution, dateTaken);
+                    }
+
+                    var format = image.RawFormat;
+                    var extension = Path.GetExtension(path);
+                    var filename = Path.GetFileNameWithoutExtension(path);
+                    await Task.Run(() => printReadyImage.Save(Path.Combine(outputFolder.Path, $"{filename}_PrintReady.{extension}"), format));
+                }
             }
 
             progressDialog.Hide();
@@ -182,6 +186,26 @@ namespace PrintReady.Controls
             {
                 textBlock.Text = (string)menuFlyoutItem.Tag;
             }
+        }
+
+        public void OnAddDateButtonChecked(object sender, RoutedEventArgs e)
+        {
+            if (App.Current is not App app || app.Window is not MainWindow mainWindow)
+            {
+                return;
+            }
+
+            mainWindow.ShouldAddDate = true;
+        }
+
+        public void OnAddDateButtonUnchecked(object sender, RoutedEventArgs e)
+        {
+            if (App.Current is not App app || app.Window is not MainWindow mainWindow)
+            {
+                return;
+            }
+
+            mainWindow.ShouldAddDate = false;
         }
     }
 }

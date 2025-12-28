@@ -13,6 +13,7 @@ using PrintReady.Extensions;
 using PrintReady.Models;
 using PrintReady.Services;
 using PrintReady.ViewModels;
+using Windows.Storage;
 using Windows.Storage.Pickers;
 
 namespace PrintReady.Controls;
@@ -38,7 +39,7 @@ public sealed partial class JustifiedGallery : GridView
         ItemClick += OnGalleryItemClicked;
     }
 
-    public async Task LoadImages(IEnumerable<string> imagePaths)
+    public async Task LoadImages(IEnumerable<StorageFile> files)
     {
         Logger.Log("Loading images");
         var progressRing = new ProgressRing()
@@ -53,12 +54,15 @@ public sealed partial class JustifiedGallery : GridView
             Title = ResourceLoader.GetString("LoadingPictures")
         };
 
-        var progressStep = 100d / imagePaths.Count();
+        var progressStep = 100d / files.Count();
 
         _ = progressDialog.ShowAsync();
 
-        foreach (var imagePath in imagePaths)
+        foreach (var file in files)
         {
+            var imagePath = file.Path;
+            var imageProperties = await file.Properties.GetImagePropertiesAsync();
+
             progressRing.Value += progressStep;
             if (!ImagePathsAdded.Add(imagePath))
             {
@@ -77,7 +81,8 @@ public sealed partial class JustifiedGallery : GridView
                 Source = imageSource,
                 Width = imageData.Width * scaleFactor,
                 Height = ItemTargetHeight,
-                Stretch = Stretch.Fill
+                Stretch = Stretch.Fill,
+                Tag = imageProperties.DateTaken
             };
 
             var border = new Border
@@ -192,7 +197,7 @@ public sealed partial class JustifiedGallery : GridView
         else if(args.ClickedItem is Border border && border.Child is Image image && image.Source is BitmapImage source)
         {
 
-            var preview = await GetPreview(source.UriSource.LocalPath);
+            var preview = await GetPreview(source.UriSource.LocalPath, (DateTimeOffset)image.Tag);
             var flyout = new Flyout()
             {
                 Content = new Border()
@@ -253,10 +258,10 @@ public sealed partial class JustifiedGallery : GridView
         picker.FileTypeFilter.Add(".png");
 
         var files = await picker.PickMultipleFilesAsync();
-        await LoadImages(files.Select(f => f.Path));
+        await LoadImages(files);
     }
 
-    private async Task<Image> GetPreview(string imagePath)
+    private async Task<Image> GetPreview(string imagePath, DateTimeOffset dateTaken)
     {
         var image = System.Drawing.Image.FromFile(imagePath);
         image.FixOrientation();
@@ -274,7 +279,7 @@ public sealed partial class JustifiedGallery : GridView
             resizedWidth = 500;
         }
 
-        var resizedImageSource = await image.ToPrintReadyImage(resizedWidth, resizedHeight, ViewModel.SelectedColor, ViewModel.SelectedResolution).ToImageSourceAsync();
+        var resizedImageSource = await image.ToPrintReadyImage(resizedWidth, resizedHeight, ViewModel.SelectedColor, ViewModel.SelectedResolution, dateTaken).ToImageSourceAsync();
 
         var resizedImage = new Image
         {

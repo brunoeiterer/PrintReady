@@ -111,6 +111,7 @@
                 </MenuFlyout>
             </AppBarButton.Flyout>
         </AppBarButton>
+        <AppBarToggleButton x:Uid="AddDateButton" x:Name="AddDatebutton" IsChecked="True" Checked="OnAddDateButtonChecked" Unchecked="OnAddDateButtonUnchecked" />
 
     </CommandBar>
 </UserControl>
