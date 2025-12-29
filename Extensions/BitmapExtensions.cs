@@ -2,11 +2,11 @@
 using System.Drawing.Imaging;
 using System.Drawing;
 using System.Runtime.InteropServices.WindowsRuntime;
-using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using Microsoft.UI.Xaml.Media.Imaging;
 using Microsoft.UI.Xaml.Media;
 using Windows.Graphics.Imaging;
+using System.IO;
 
 namespace PrintReady.Extensions
 {
@@ -14,13 +14,11 @@ namespace PrintReady.Extensions
     {
         public static async Task<ImageSource> ToImageSourceAsync(this Bitmap bitmap)
         {
-            var data = bitmap.LockBits(new Rectangle(0, 0, bitmap.Width, bitmap.Height), ImageLockMode.ReadOnly, bitmap.PixelFormat);
-            var bytes = new byte[data.Stride * data.Height];
-            Marshal.Copy(data.Scan0, bytes, 0, bytes.Length);
-            bitmap.UnlockBits(data);
-
-            var softwareBitmap = new SoftwareBitmap(BitmapPixelFormat.Bgra8, bitmap.Width, bitmap.Height, BitmapAlphaMode.Premultiplied);
-            softwareBitmap.CopyFromBuffer(bytes.AsBuffer());
+            using var stream = new Windows.Storage.Streams.InMemoryRandomAccessStream();
+            bitmap.Save(stream.AsStream(), ImageFormat.Jpeg);
+            var decoder = await BitmapDecoder.CreateAsync(stream);
+            var softwareBitmap = await decoder.GetSoftwareBitmapAsync();
+            softwareBitmap = SoftwareBitmap.Convert(softwareBitmap, softwareBitmap.BitmapPixelFormat, BitmapAlphaMode.Premultiplied);
 
             var source = new SoftwareBitmapSource();
             await source.SetBitmapAsync(softwareBitmap);

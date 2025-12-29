@@ -202,20 +202,17 @@ public sealed partial class JustifiedGallery : GridView
             {
                 Content = new Border()
                 {
-                    Child = new Image()
-                    {
-                        Source = preview.Source,
-                        Width = preview.Width,
-                        Height = preview.Height,
-                    }
+                    Child = preview,
+                    Width = preview.Width,
+                    Height = preview.Height
                 },
             };
 
             var style = new Style(typeof(FlyoutPresenter));
             style.Setters.Add(new Setter(MarginProperty, new Thickness(0)));
             style.Setters.Add(new Setter(PaddingProperty, new Thickness(0)));
-            style.Setters.Add(new Setter(MaxWidthProperty, preview.Width));
-            style.Setters.Add(new Setter(MaxHeightProperty, preview.Height));
+            style.Setters.Add(new Setter(MaxWidthProperty, preview.Width + 20));
+            style.Setters.Add(new Setter(MaxHeightProperty, preview.Height + 20));
             style.Setters.Add(new Setter(WidthProperty, preview.Width));
             style.Setters.Add(new Setter(HeightProperty, preview.Height));
             flyout.SetValue(Flyout.FlyoutPresenterStyleProperty, style);
@@ -264,7 +261,7 @@ public sealed partial class JustifiedGallery : GridView
     private async Task<Image> GetPreview(string imagePath, DateTimeOffset dateTaken)
     {
         var image = System.Drawing.Image.FromFile(imagePath);
-        image.FixOrientation();
+        var rotation = image.GetFixOrientationRotation();
 
         int resizedWidth;
         int resizedHeight;
@@ -279,13 +276,14 @@ public sealed partial class JustifiedGallery : GridView
             resizedWidth = 500;
         }
 
-        var resizedImageSource = await image.ToPrintReadyImage(resizedWidth, resizedHeight, ViewModel.SelectedColor, ViewModel.SelectedResolution, dateTaken).ToImageSourceAsync();
+        var printReadyImage = image.ToPrintReadyImage(resizedWidth, resizedHeight, ViewModel.SelectedColor, ViewModel.SelectedResolution, dateTaken, 5, rotation);
+        var resizedImageSource = await printReadyImage.ToImageSourceAsync();
 
         var resizedImage = new Image
         {
             Source = resizedImageSource,
-            Width = resizedWidth,
-            Height = resizedHeight,
+            Width = printReadyImage.Width,
+            Height = printReadyImage.Height,
             Stretch = Stretch.None
         };
 

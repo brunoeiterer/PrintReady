@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Linq;
+using System.Numerics;
 
 namespace PrintReady.Extensions
 {
@@ -39,7 +41,38 @@ namespace PrintReady.Extensions
             image.RemovePropertyItem(PropertyTagOrientation);
         }
 
-        public static Bitmap ToPrintReadyImage(this Image originalImage, int width, int height, Color borderColor, int resolution, DateTimeOffset? dateTaken)
+        public static int GetFixOrientationRotation(this Image image)
+        {
+            if (!image.PropertyIdList.Contains(PropertyTagOrientation))
+            {
+                return 0;
+            }
+
+            var propertyTagOrientationValue = image.GetPropertyItem(PropertyTagOrientation)?.Value;
+
+            if (propertyTagOrientationValue == null)
+            {
+                return 0;
+            }
+
+            int orientation = BitConverter.ToUInt16(propertyTagOrientationValue, 0);
+            if (orientation == 3)
+            {
+                return 180;
+            }
+            else if (orientation == 6)
+            {
+                return 90;
+            }
+            else if (orientation == 8)
+            {
+                return 270;
+            }
+
+            return 0;
+        }
+
+        public static Bitmap ToPrintReadyImage(this Image originalImage, int width, int height, Color borderColor, int resolution, DateTimeOffset? dateTaken, int? fontSize = null, int? rotation = null)
         {
             var scaleX = (double)width / originalImage.Width;
             var scaleY = (double)height / originalImage.Height;
@@ -55,6 +88,7 @@ namespace PrintReady.Extensions
             borderedImage.SetResolution(resolution, resolution);
 
             using var graphics = Graphics.FromImage(borderedImage);
+            graphics.SmoothingMode = SmoothingMode.HighQuality;
             graphics.Clear(borderColor);
             graphics.DrawImage(originalImage, new Rectangle(offsetX, offsetY, newWidth, newHeight));
 
@@ -67,11 +101,28 @@ namespace PrintReady.Extensions
 
             if (shouldAddDate && dateTaken is not null)
             {
-                var dateString = dateTaken.ToString();
-                using var font = SystemFonts.DefaultFont;
-                using var brush = new SolidBrush(Color.Black);
+                var dateString = dateTaken.Value.ToString();
+                using var systemFont = SystemFonts.DefaultFont;
+                var font = new Font(systemFont.FontFamily, fontSize ?? 16);
                 var size = graphics.MeasureString(dateString, font);
-                graphics.DrawString(dateString, font, brush, width - size.Width, height - size.Height);
+
+                var path = new GraphicsPath();
+                path.AddString(dateString, systemFont.FontFamily, (int)FontStyle.Regular, graphics.DpiY * (fontSize ?? 16) / 72, new PointF(width - size.Width, height - size.Height), StringFormat.GenericDefault);
+
+                graphics.DrawPath(Pens.White, path);
+                graphics.FillPath(Brushes.Black, path);
+            }
+
+            if(rotation is not null)
+            {
+                var rotateFlipType = rotation switch
+                {
+                    90 => RotateFlipType.Rotate90FlipNone,
+                    180 => RotateFlipType.Rotate180FlipNone,
+                    270 => RotateFlipType.Rotate270FlipNone,
+                    _ => RotateFlipType.RotateNoneFlipNone
+                };
+                borderedImage.RotateFlip(rotateFlipType);
             }
 
             return borderedImage;
