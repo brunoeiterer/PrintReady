@@ -10,7 +10,7 @@
   <Identity
     Name="BrunoValeBarbosaEiterer.24302079FF09C"
     Publisher="CN=5718BB6E-B2FD-4B3C-9338-477390CE649A"
-    Version="1.1.1.0" />
+    Version="1.1.2.0" />
 
   <mp:PhoneIdentity PhoneProductId="b06041c7-e609-4a68-8182-795ce0c5526b" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
 
@@ -37,11 +37,14 @@
       <uap:VisualElements
         DisplayName="PrintReady"
         Description="Automatically make your pictures PrintReady, by resizing and adding a border to fill the space, without making them look distorted."
-        BackgroundColor="transparent"
-        Square150x150Logo="Assets\LogoPrintReady150x150.png"
-        Square44x44Logo="Assets\LogoPrintReady44x44.png">
-        <uap:DefaultTile Wide310x150Logo="Assets\Wide310x150Logo.png"  Square71x71Logo="Assets\SmallTile.png" Square310x310Logo="Assets\LargeTile.png"/>
-        <uap:SplashScreen Image="Assets\SplashScreen.png" />
+        BackgroundColor="transparent" Square44x44Logo="Assets\LogoPrintReady44x44.png" Square150x150Logo="Assets\MediumTile.png">
+        <uap:DefaultTile Square71x71Logo="Assets\SmallTile.png" Wide310x150Logo="Assets\Wide310x150Logo.png" Square310x310Logo="Assets\LargeTile.png">
+          <uap:ShowNameOnTiles>
+            <uap:ShowOn Tile="square150x150Logo"/>
+          </uap:ShowNameOnTiles>
+        </uap:DefaultTile >
+        <uap:SplashScreen Image="Assets\SplashScreen.png"/>
+        <uap:LockScreen BadgeLogo="Assets\BadgeLogo.png" Notification="badge"/>
       </uap:VisualElements>
     </Application>
   </Applications>
